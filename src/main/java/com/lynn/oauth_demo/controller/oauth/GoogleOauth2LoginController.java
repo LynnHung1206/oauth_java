@@ -1,4 +1,4 @@
-package com.lynn.oauth_demo.controller;
+package com.lynn.oauth_demo.controller.oauth;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.net.URIBuilder;
@@ -18,9 +18,9 @@ import java.net.URISyntaxException;
  * @Author: Lynn on 2025/4/27
  */
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/oauth")
 @Slf4j
-public class LoginController {
+public class GoogleOauth2LoginController {
 
   @Value("${google.oauth.clientId}")
   private String clientId;
@@ -28,11 +28,14 @@ public class LoginController {
   @Value("${google.oauth.redirectUri}")
   private String redirectUri;
 
+  @Value("${google.oauth.uri}")
+  private String googleOauthUri;
+
 
   @GetMapping("/login/google")
   public ResponseEntity<Void> loginWithGoogle() throws URISyntaxException {
 
-    URI uri = new URIBuilder("https://accounts.google.com/o/oauth2/v2/auth")
+    URI uri = new URIBuilder(googleOauthUri)
         .addParameter("client_id", clientId)
         .addParameter("redirect_uri", redirectUri)
         .addParameter("response_type", "code")

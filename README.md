@@ -43,9 +43,9 @@
 
 命名：例如 LoginServiceWeb
 
-「授權的重新導向 URI」填：http://localhost:8080/oauth2/callback
+「授權的重新導向 URI」填：http://localhost:8080/api/oauth2/callback
 
-（這個是等一下我們後端接收 Google 回來的跳轉位置）
+（這個是等一下我們後端接收 Google 回來的跳轉位置 錯了就授權失敗）
 
 建好之後，它會給你一組 Client ID 和 Client Secret 自己留好。
 

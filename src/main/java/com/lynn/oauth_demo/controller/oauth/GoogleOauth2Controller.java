@@ -1,4 +1,4 @@
-package com.lynn.oauth_demo.controller;
+package com.lynn.oauth_demo.controller.oauth;
 
 import com.lynn.oauth_demo.client.GoogleOauthClient;
 import com.lynn.oauth_demo.client.GoogleUserInfoClient;
@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,15 +18,16 @@ import java.util.Map;
  * @Author: Lynn on 2025/4/27
  */
 @RestController
+@RequestMapping("/api")
 @Slf4j
-public class GoogleController {
+public class GoogleOauth2Controller {
 
   private final GoogleOauthClient googleOauthClient;
 
   private final GoogleUserInfoClient googleUserInfoClient;
 
-  GoogleController(GoogleOauthClient googleOauthClient,
-                   GoogleUserInfoClient googleUserInfoClient) {
+  GoogleOauth2Controller(GoogleOauthClient googleOauthClient,
+                         GoogleUserInfoClient googleUserInfoClient) {
     this.googleOauthClient = googleOauthClient;
     this.googleUserInfoClient = googleUserInfoClient;
   }
