@@ -1,7 +1,7 @@
-package com.lynn.oauth_demo.client;
+package com.lynn.oauth_demo.client.google;
 
 import com.github.lianjiatech.retrofit.spring.boot.core.RetrofitClient;
-import com.lynn.oauth_demo.dto.UserInfoDto;
+import com.lynn.oauth_demo.dto.GoogleUserInfoDto;
 import org.springframework.stereotype.Component;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
@@ -14,6 +14,6 @@ import retrofit2.http.Header;
 public interface GoogleUserInfoClient {
 
   @GET("/oauth2/v3/userinfo")
-  UserInfoDto getUserInfo(@Header("Authorization") String authorization);
+  GoogleUserInfoDto getUserInfo(@Header("Authorization") String authorization);
 }
 

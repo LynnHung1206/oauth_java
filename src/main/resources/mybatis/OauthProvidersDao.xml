@@ -1,0 +1,20 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lynn.oauth_demo.dao.Oauth_providersDao">
+    <resultMap id="BaseResultMap" type="com.lynn.oauth_demo.vo.OauthProvidersVo">
+            <result column="authorization_endpoint" property="authorizationEndpoint" />
+            <result column="client_id" property="clientId" />
+            <result column="client_secret" property="clientSecret" />
+            <result column="created_at" property="createdAt" />
+            <result column="is_active" property="isActive" />
+            <result column="provider_description" property="providerDescription" />
+            <result column="provider_id" property="providerId" />
+            <result column="provider_name" property="providerName" />
+            <result column="redirect_uri" property="redirectUri" />
+            <result column="scope" property="scope" />
+            <result column="token_endpoint" property="tokenEndpoint" />
+            <result column="updated_at" property="updatedAt" />
+            <result column="userinfo_endpoint" property="userinfoEndpoint" />
+    </resultMap>
+</mapper>

@@ -1,5 +1,8 @@
-package com.lynn.oauth_demo.controller.oauth;
+package com.lynn.oauth_demo.controller.googleOauth;
 
+import com.lynn.oauth_demo.service.OauthProviderService;
+import com.lynn.oauth_demo.vo.OauthProvidersVo;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.net.URIBuilder;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,26 +23,22 @@ import java.net.URISyntaxException;
 @RestController
 @RequestMapping("/api/oauth")
 @Slf4j
+@RequiredArgsConstructor
 public class GoogleOauth2LoginController {
 
-  @Value("${google.oauth.clientId}")
-  private String clientId;
 
-  @Value("${google.oauth.redirectUri}")
-  private String redirectUri;
-
-  @Value("${google.oauth.uri}")
-  private String googleOauthUri;
-
+  private final OauthProviderService oauthProviderService;
 
   @GetMapping("/login/google")
   public ResponseEntity<Void> loginWithGoogle() throws URISyntaxException {
 
-    URI uri = new URIBuilder(googleOauthUri)
-        .addParameter("client_id", clientId)
-        .addParameter("redirect_uri", redirectUri)
+    OauthProvidersVo provider = oauthProviderService.getOauthProviderById(1);
+
+    URI uri = new URIBuilder(provider.getAuthorizationEndpoint())
+        .addParameter("client_id", provider.getClientId())
+        .addParameter("redirect_uri", provider.getRedirectUri())
         .addParameter("response_type", "code")
-        .addParameter("scope", "openid email profile")
+        .addParameter("scope", provider.getScope())
         .addParameter("access_type", "offline")
         .addParameter("prompt", "consent")
         .addParameter("include_granted_scopes", "false")

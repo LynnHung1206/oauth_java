@@ -1,4 +1,4 @@
-package com.lynn.oauth_demo.client;
+package com.lynn.oauth_demo.client.google;
 
 import com.github.lianjiatech.retrofit.spring.boot.core.RetrofitClient;
 import org.springframework.stereotype.Component;

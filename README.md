@@ -1,5 +1,5 @@
-## Google Oauth2.0 client 實作
-
+#  Oauth2.0 client 實作
+## Google OAuth2.0 登入
 到 Google Cloud Console 設定 OAuth 應用
 打開這個網站：https://console.cloud.google.com/
 
@@ -49,3 +49,6 @@
 
 建好之後，它會給你一組 Client ID 和 Client Secret 自己留好。
 
+## Github OAuth2.0 登入
+到 Github 設定 OAuth 應用 [Settings > Developer settings > OAuth Apps]
+一樣保存好自己的 Client ID 和 Client Secret

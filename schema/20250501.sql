@@ -1,3 +1,4 @@
+use test;
 INSERT INTO oauth_providers (
     provider_name,
     provider_description,
