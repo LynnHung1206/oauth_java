@@ -1,12 +1,14 @@
 package com.lynn.oauth_demo.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 import lombok.Data;
 
 /**
  * @Author: Lynn on 2025/4/27
  */
 @Data
+@Builder
 public class GoogleUserInfoDto {
 
   /** 用戶唯一識別碼 */
@@ -30,5 +32,10 @@ public class GoogleUserInfoDto {
 
   @JsonProperty("email_verified")
   private Boolean emailVerified;
+
+  @JsonProperty("issued_at")
+  private long issuedAt;
+  @JsonProperty("expires_at")
+  private long expiresAt;
 
 }

@@ -8,6 +8,7 @@ import retrofit2.http.Header;
 
 /**
  * @Author: Lynn on 2025/4/27
+ * 實作 oauth2.0 的 Google 用戶資訊獲取 oidc用不到
  */
 @RetrofitClient(baseUrl = "https://www.googleapis.com")
 @Component

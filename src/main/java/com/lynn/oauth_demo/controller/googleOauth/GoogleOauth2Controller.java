@@ -2,9 +2,12 @@ package com.lynn.oauth_demo.controller.googleOauth;
 
 import com.lynn.oauth_demo.client.google.GoogleOauthClient;
 import com.lynn.oauth_demo.client.google.GoogleUserInfoClient;
+import com.lynn.oauth_demo.dto.GoogleTokenResponseDto;
 import com.lynn.oauth_demo.dto.GoogleUserInfoDto;
 import com.lynn.oauth_demo.service.OauthProviderService;
+import com.lynn.oauth_demo.valid.JwtValidator;
 import com.lynn.oauth_demo.vo.OauthProvidersVo;
+import com.nimbusds.jwt.JWTClaimsSet;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,35 +31,42 @@ public class GoogleOauth2Controller {
 
   private final GoogleOauthClient googleOauthClient;
 
-  private final GoogleUserInfoClient googleUserInfoClient;
-
   private final OauthProviderService oauthProviderService;
 
-
-  @Value("${google.oauth.clientId}")
-  private String clientId;
-
-  @Value("${google.oauth.clientSecret}")
-  private String clientSecret;
-
+  private final JwtValidator validator;
   @GetMapping("/oauth2/callback")
-  public Object oauthCallback(@RequestParam("code") String code) {
+  public Object oauthCallback(@RequestParam("code") String code) throws Exception {
 
     OauthProvidersVo provider = oauthProviderService.getOauthProviderById(1);
     Map<String, String> fields = new HashMap<>();
     fields.put("code", code);
     fields.put("client_id", provider.getClientId());
     fields.put("client_secret", provider.getClientSecret());
-    fields.put("redirect_uri", "http://localhost:8080/oauth2/callback");
+    fields.put("redirect_uri", provider.getRedirectUri());
     fields.put("grant_type", "authorization_code");
 
-    Map<String, Object> body = googleOauthClient.getAccessToken(fields);
-    String token = (String) body.get("access_token");
+    GoogleTokenResponseDto accessToken = googleOauthClient.getAccessToken(fields);
 
-    String authorizationHeader = "Bearer " + token;
-    GoogleUserInfoDto userInfo = googleUserInfoClient.getUserInfo(authorizationHeader);
+    String idToken = accessToken.getIdToken();
+    JWTClaimsSet claims = validator.validate(idToken);
 
-    return ResponseEntity.ok(userInfo);
+    GoogleUserInfoDto userInfoDto = GoogleUserInfoDto.builder()
+        .sub(claims.getSubject())
+        .name(claims.getClaim("name").toString())
+        .givenName(claims.getClaim("given_name").toString())
+        .familyName(claims.getClaim("family_name").toString())
+        .picture(claims.getClaim("picture").toString())
+        .email(claims.getClaim("email").toString())
+        .emailVerified(Boolean.valueOf(claims.getClaim("email_verified").toString()))
+        .issuedAt(claims.getIssueTime().getTime())
+        .expiresAt(claims.getExpirationTime().getTime())
+        .build();
+
+    Map<String, Object> response = new HashMap<>();
+    response.put("userInfo", userInfoDto);
+    response.put("tokens", accessToken);
+
+    return ResponseEntity.ok(response);
   }
 
 
