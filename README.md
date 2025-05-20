@@ -49,6 +49,8 @@
 
 建好之後，它會給你一組 Client ID 和 Client Secret 自己留好。
 
+[規格](https://accounts.google.com/.well-known/openid-configuration)
+
 ## Github OAuth2.0 登入
 到 Github 設定 OAuth 應用 [Settings > Developer settings > OAuth Apps]
 一樣保存好自己的 Client ID 和 Client Secret
