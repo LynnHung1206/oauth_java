@@ -29,45 +29,61 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class GoogleOauth2Controller {
 
-  private final GoogleOauthClient googleOauthClient;
+    private final GoogleOauthClient googleOauthClient;
 
-  private final OauthProviderService oauthProviderService;
+    private final OauthProviderService oauthProviderService;
 
-  private final JwtValidator validator;
-  @GetMapping("/oauth2/callback")
-  public Object oauthCallback(@RequestParam("code") String code) throws Exception {
+    private final GoogleUserInfoClient googleUserInfoClient;
 
-    OauthProvidersVo provider = oauthProviderService.getOauthProviderById(1);
-    Map<String, String> fields = new HashMap<>();
-    fields.put("code", code);
-    fields.put("client_id", provider.getClientId());
-    fields.put("client_secret", provider.getClientSecret());
-    fields.put("redirect_uri", provider.getRedirectUri());
-    fields.put("grant_type", "authorization_code");
+    private final JwtValidator validator;
 
-    GoogleTokenResponseDto accessToken = googleOauthClient.getAccessToken(fields);
+    @Value("${is.oidc.enabled}")
+    private boolean isOidcEnabled;
 
-    String idToken = accessToken.getIdToken();
-    JWTClaimsSet claims = validator.validate(idToken);
+    @GetMapping("/oauth2/callback")
+    public Object oauthCallback(@RequestParam("code") String code) throws Exception {
 
-    GoogleUserInfoDto userInfoDto = GoogleUserInfoDto.builder()
-        .sub(claims.getSubject())
-        .name(claims.getClaim("name").toString())
-        .givenName(claims.getClaim("given_name").toString())
-        .familyName(claims.getClaim("family_name").toString())
-        .picture(claims.getClaim("picture").toString())
-        .email(claims.getClaim("email").toString())
-        .emailVerified(Boolean.valueOf(claims.getClaim("email_verified").toString()))
-        .issuedAt(claims.getIssueTime().getTime())
-        .expiresAt(claims.getExpirationTime().getTime())
-        .build();
+        OauthProvidersVo provider = oauthProviderService.getOauthProviderById(1);
+        Map<String, String> fields = new HashMap<>();
+        fields.put("code", code);
+        fields.put("client_id", provider.getClientId());
+        fields.put("client_secret", provider.getClientSecret());
+        fields.put("redirect_uri", provider.getRedirectUri());
+        fields.put("grant_type", "authorization_code");
 
-    Map<String, Object> response = new HashMap<>();
-    response.put("userInfo", userInfoDto);
-    response.put("tokens", accessToken);
+        GoogleTokenResponseDto accessToken = googleOauthClient.getAccessToken(fields);
+        return isOidcEnabled ? this.oidcProcess(accessToken) : this.oauth2Process(accessToken);
+    }
 
-    return ResponseEntity.ok(response);
-  }
+    private Object oidcProcess(GoogleTokenResponseDto accessToken) throws Exception {
+        JWTClaimsSet claims = validator.validate(accessToken.getIdToken());
+
+        GoogleUserInfoDto userInfoDto = GoogleUserInfoDto.builder()
+                .sub(claims.getSubject())
+                .name(claims.getClaim("name").toString())
+                .givenName(claims.getClaim("given_name").toString())
+                .familyName(claims.getClaim("family_name").toString())
+                .picture(claims.getClaim("picture").toString())
+                .email(claims.getClaim("email").toString())
+                .emailVerified(Boolean.valueOf(claims.getClaim("email_verified").toString()))
+                .issuedAt(claims.getIssueTime().getTime())
+                .expiresAt(claims.getExpirationTime().getTime())
+                .build();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("userInfo", userInfoDto);
+        response.put("tokens", accessToken);
+        return ResponseEntity.ok(response);
+    }
+
+    private Object oauth2Process(GoogleTokenResponseDto accessToken) {
+        String token = accessToken.getAccessToken();
+        String authorizationHeader = "Bearer " + token;
+        GoogleUserInfoDto userInfo = googleUserInfoClient.getUserInfo(authorizationHeader);
+        Map<String, Object> response = new HashMap<>();
+        response.put("userInfo", userInfo);
+        return ResponseEntity.ok(response);
+    }
 
 
 }
