@@ -83,6 +83,7 @@ public class GoogleAuthController {
         GoogleUserInfoDto userInfo = googleUserInfoClient.getUserInfo(authorizationHeader);
         Map<String, Object> response = new HashMap<>();
         response.put("userInfo", userInfo);
+        response.put("tokens", accessToken);
         return ResponseEntity.ok(response);
     }
 
