@@ -21,7 +21,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/oauth2/callback")
 @RequiredArgsConstructor
-public class GithubOauth2CallbackController {
+public class GithubAuthController {
 
   private final GithubOauthClient githubOauthClient;
 

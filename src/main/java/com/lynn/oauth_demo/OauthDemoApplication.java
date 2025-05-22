@@ -7,7 +7,6 @@ import org.springframework.context.annotation.PropertySource;
 
 @SpringBootApplication
 @RetrofitScan(basePackages = "com.lynn.oauth_demo.client")
-@PropertySource("classpath:application-secret.properties")
 public class OauthDemoApplication {
 
   public static void main(String[] args) {

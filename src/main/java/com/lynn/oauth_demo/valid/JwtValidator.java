@@ -27,12 +27,9 @@ import java.util.Date;
 @Component
 public class JwtValidator {
 
-  private static final String JWKS_URI =
-      "https://www.googleapis.com/oauth2/v3/certs";
-  private static final String ISSUER = "https://accounts.google.com";
+  private static final String JWKS_URI = "https://www.googleapis.com/oauth2/v3/certs";
 
-  @Value("${google.oauth.clientId}")
-  private String clientId;
+  private static final String ISSUER = "https://accounts.google.com";
 
   private final ConfigurableJWTProcessor<SecurityContext> jwtProcessor;
 
@@ -50,7 +47,7 @@ public class JwtValidator {
     jwtProcessor.setJWSKeySelector(keySelector);
   }
 
-  public JWTClaimsSet validate(String idToken) throws Exception {
+  public JWTClaimsSet validate(String idToken,String clientId) throws Exception {
     SignedJWT signedJWT = SignedJWT.parse(idToken);
 
     // 驗證簽章並提取 Claims

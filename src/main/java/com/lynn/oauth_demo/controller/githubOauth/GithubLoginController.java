@@ -22,7 +22,7 @@ import java.net.URISyntaxException;
 @RequestMapping("/api/oauth")
 @Slf4j
 @RequiredArgsConstructor
-public class GithubOauth2LoginController {
+public class GithubLoginController {
 
   private final OauthProviderService oauthProviderService;
   @GetMapping("/login/github")

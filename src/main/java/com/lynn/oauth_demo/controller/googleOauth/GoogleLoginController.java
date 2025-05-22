@@ -5,7 +5,6 @@ import com.lynn.oauth_demo.vo.OauthProvidersVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.net.URIBuilder;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +23,7 @@ import java.net.URISyntaxException;
 @RequestMapping("/api/oauth")
 @Slf4j
 @RequiredArgsConstructor
-public class GoogleOauth2LoginController {
+public class GoogleLoginController {
 
 
   private final OauthProviderService oauthProviderService;

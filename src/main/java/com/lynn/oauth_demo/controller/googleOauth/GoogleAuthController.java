@@ -27,7 +27,7 @@ import java.util.Map;
 @RequestMapping("/api")
 @Slf4j
 @RequiredArgsConstructor
-public class GoogleOauth2Controller {
+public class GoogleAuthController {
 
     private final GoogleOauthClient googleOauthClient;
 
@@ -44,19 +44,20 @@ public class GoogleOauth2Controller {
     public Object oauthCallback(@RequestParam("code") String code) throws Exception {
 
         OauthProvidersVo provider = oauthProviderService.getOauthProviderById(1);
+        String clientId = provider.getClientId();
         Map<String, String> fields = new HashMap<>();
         fields.put("code", code);
-        fields.put("client_id", provider.getClientId());
+        fields.put("client_id", clientId);
         fields.put("client_secret", provider.getClientSecret());
         fields.put("redirect_uri", provider.getRedirectUri());
         fields.put("grant_type", "authorization_code");
 
         GoogleTokenResponseDto accessToken = googleOauthClient.getAccessToken(fields);
-        return isOidcEnabled ? this.oidcProcess(accessToken) : this.oauth2Process(accessToken);
+        return isOidcEnabled ? this.oidcProcess(accessToken, clientId) : this.oauth2Process(accessToken);
     }
 
-    private Object oidcProcess(GoogleTokenResponseDto accessToken) throws Exception {
-        JWTClaimsSet claims = validator.validate(accessToken.getIdToken());
+    private Object oidcProcess(GoogleTokenResponseDto accessToken, String clientId) throws Exception {
+        JWTClaimsSet claims = validator.validate(accessToken.getIdToken(), clientId);
 
         GoogleUserInfoDto userInfoDto = GoogleUserInfoDto.builder()
                 .sub(claims.getSubject())
