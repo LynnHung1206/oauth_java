@@ -32,6 +32,7 @@ public class GithubLoginController {
         .addParameter("client_id", provider.getClientId())
         .addParameter("redirect_uri", provider.getRedirectUri())
         .addParameter("scope", provider.getScope())
+        .addParameter("prompt", "consent")
         .build();
     HttpHeaders headers = new HttpHeaders();
     headers.setLocation(URI.create(uri.toString()));
